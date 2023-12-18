@@ -1,6 +1,14 @@
 version: '3'
 services:
 
+  db:
+    image: mongo:7.0.0
+    container_name: db
+
+    ports:
+      - "4000:27017"
+    restart: always
+
   azure-storage:
     image: azure-storage
     build: 
@@ -8,11 +16,11 @@ services:
       dockerfile: Dockerfile
     container_name: video-storage
     ports:
-     - "4000:80"
+     - "4001:80"
     environment:
       - PORT=80
       - STORAGE_ACCOUNT_NAME=${STORAGE_ACCOUNT_NAME}
-      - STORAGE_ACCESS_KEY=${STORAGE_ACCESS_KEY}
+      - STORAGE_ACCESS_KEY=MIcMOHfOl2CzoSbrFi8Wdiv0+9dH/tspXEqCy/ERAdEn5UfaJBHK6G+ND4LCIrvVW2/LgNLkx+1I+AStt++mqA==
     restart: "no"
 
   video-streaming:
@@ -22,9 +30,13 @@ services:
       dockerfile: Dockerfile
     container_name: video-streaming
     ports:
-     - "4001:80"
+     - "4002:80"
     environment:
       - PORT=80
+      - DBHOST=mongodb://db:27017
+      - DBNAME=video-streaming
       - VIDEO_STORAGE_HOST=video-storage
       - VIDEO_STORAGE_PORT=80
+    depends_on:
+      - db
     restart: "no"
