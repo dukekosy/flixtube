@@ -44,8 +44,10 @@ app.get("/", (req, res) => {
 
 app.get("/video", async (req, res) => {
 
+console.log(`video endpoint`);
 	const videoId = new mongodb.ObjectId(req.query.id);
-	const videoRecord = await videosCollection.findOne({ _id: videoId});
+console.log(`video id ${videoId}`);
+	const videoRecord = await videosCollection.findOne({ _id: videoId });
 		if(!videoRecord) {
 			res.sendStatus(404);
 			return;
